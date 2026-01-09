@@ -1,0 +1,231 @@
+# M-Tec Energy Butler Modbus Definition
+# Datei: mtec_modbus.yaml
+# Einbindung: Als Package in configuration.yaml
+
+modbus:
+  - name: M-TEC
+    type: rtuovertcp
+    host: 192.168.178.106
+    port: 502
+    timeout: 5
+    
+    # ---------------------------------------------------------
+    # SWITCHES
+    # ---------------------------------------------------------
+    switches:
+      - name: Off-grid Battery SOC Protection Switch
+        unique_id: off_grid_battery_soc_protection_switch
+        slave: 252
+        address: 52504
+        write_type: holding
+        scan_interval: 360
+        command_on: 1
+        command_off: 0
+        verify:
+          input_type: holding
+          address: 52504
+          state_on: 1
+          state_off: 0
+
+      - name: On-grid Battery SOC Protection Switch
+        unique_id: on_grid_battery_soc_protection_switch
+        slave: 252
+        address: 52502
+        write_type: holding
+        scan_interval: 360
+        command_on: 1
+        command_off: 0
+        verify:
+          input_type: holding
+          address: 52502
+          state_on: 1
+          state_off: 0
+
+      - name: Priority Power Output Setting
+        unique_id: priority_power_output_setting
+        slave: 252
+        address: 50210
+        write_type: holding
+        scan_interval: 360
+        command_on: 1
+        command_off: 0
+        verify:
+          input_type: holding
+          address: 50210
+          state_on: 1
+          state_off: 0
+
+      - name: ECO Mode setting
+        unique_id: eco_mode_setting
+        slave: 252
+        address: 50000
+        write_type: holding
+        scan_interval: 20
+        command_on: 258
+        command_off: 257
+        verify:
+          input_type: holding
+          address: 50000
+          state_on: 258
+          state_off: 257
+
+    # ---------------------------------------------------------
+    # SENSORS
+    # ---------------------------------------------------------
+    sensors:
+      # --- Meter & Grid Data ---
+      - name: Total Grid-Injection Energy on Meter
+        unique_id: total_grid_injection_energy_on_meter
+        slave: 252
+        address: 11002
+        input_type: holding
+        state_class: total_increasing
+        unit_of_measurement: kWh
+        device_class: energy
+        scale: 0.01
+        precision: 2
+        data_type: int32
+        scan_interval: 3600
+
+      - name: Total Purchasing Energy from Grid on Meter
+        unique_id: total_purchasing_energy_from_grid_on_meter
+        slave: 252
+        address: 11004
+        input_type: holding
+        state_class: total_increasing
+        unit_of_measurement: kWh
+        device_class: energy
+        scale: 0.01
+        precision: 2
+        data_type: int32
+        scan_interval: 3600
+
+      - name: Total Power on Meter
+        unique_id: total_power_on_meter
+        slave: 252
+        address: 11000
+        input_type: holding
+        state_class: measurement
+        unit_of_measurement: kW
+        device_class: power
+        scale: 0.001
+        precision: 3
+        data_type: int32
+        scan_interval: 10
+
+      # --- Inverter Info & Status ---
+      - name: Inverter SN
+        unique_id: inverter_sn
+        slave: 252
+        address: 10000
+        input_type: holding
+        count: 10
+        data_type: string
+        scan_interval: 86400
+
+      - name: Inverter Running Status
+        unique_id: inverter_running_status
+        slave: 252
+        address: 10105
+        input_type: holding
+        data_type: int16
+        scan_interval: 10
+
+      # --- PV Generation ---
+      - name: PV Input Total Power
+        unique_id: pv_input_total_power
+        slave: 252
+        address: 11028
+        input_type: holding
+        state_class: measurement
+        device_class: power
+        unit_of_measurement: kW
+        scale: 0.001
+        precision: 3
+        data_type: int32
+        scan_interval: 5
+
+      - name: Total PV Generation
+        unique_id: total_pv_generation
+        slave: 252
+        address: 31112
+        input_type: holding
+        unit_of_measurement: kWh
+        state_class: total_increasing
+        device_class: energy
+        data_type: int32
+        scale: 0.1
+        precision: 1
+        scan_interval: 600
+
+      # --- Battery Data ---
+      - name: Battery SOC
+        unique_id: battery_soc
+        slave: 252
+        address: 33000
+        input_type: holding
+        state_class: measurement
+        unit_of_measurement: '%'
+        device_class: battery
+        scale: 0.01
+        precision: 2
+        data_type: int16
+        scan_interval: 60
+
+      - name: Battery P
+        unique_id: battery_p
+        slave: 252
+        address: 30258
+        input_type: holding
+        state_class: measurement
+        unit_of_measurement: kW
+        device_class: power
+        scale: 0.001
+        precision: 3
+        data_type: int32
+        scan_interval: 10
+
+      - name: Battery Charge Energy on that day
+        unique_id: battery_charge_energy_on_that_day
+        slave: 252
+        address: 31003
+        scale: 0.1
+        precision: 1
+        input_type: holding
+        unit_of_measurement: kWh
+        state_class: total_increasing
+        device_class: energy
+        data_type: int16
+        scan_interval: 60
+
+      - name: Battery Discharge Energy on that day
+        unique_id: battery_discharge_energy_on_that_day
+        slave: 252
+        address: 31004
+        scale: 0.1
+        precision: 1
+        input_type: holding
+        unit_of_measurement: kWh
+        state_class: total_increasing
+        device_class: energy
+        data_type: int16
+        scan_interval: 60
+
+      # --- Control & Settings (Read/Write Registers) ---
+      - name: Hybrid Inverter Working Mode Setting
+        unique_id: hybrid_inverter_working_mode_setting
+        slave: 252
+        address: 50000
+        input_type: holding
+        data_type: int16
+        scan_interval: 60
+
+      - name: Grid Injection Power Limit Setting
+        unique_id: grid_injection_power_limit_setting
+        slave: 252
+        address: 25103
+        input_type: holding
+        scale: 0.1
+        precision: 1
+        data_type: int16
+        scan_interval: 110
